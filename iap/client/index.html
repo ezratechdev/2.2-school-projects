@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/index.css">
+    <title>Main Page</title>
+</head>
+<body>
+    <div class="main">
+        <div class="user-bar">
+            <div>
+                <p>Hi <span class="user-name-span">user..</span></p>
+            </div>
+            <div class="toggle">
+                <a href="./routes/user.html">Dashboard</a>
+            </div>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search Equipment">
+        </div>
+        <div class="equipments-list">
+            <p class="title">Equipments list</p>
+            <ul>
+                <!-- li -->
+                <li>
+                    <div class="li-mainer">
+                        <div>
+                            <span class="equipment-name">Equipment name</span>
+                            <span class="is-available">Is available</span>
+                        </div>
+                        <div style="align-items:center">
+                            <button class="book-btn">Book</button>
+                        </div>
+                    </div>
+                </li>
+                <!-- li -->
+                <!-- li -->
+                <li>
+                    <div class="li-mainer">
+                        <div>
+                            <span class="equipment-name">Equipment name</span>
+                            <span class="not-available">Is not available</span>
+                        </div>
+                        <div style="align-items:center">
+                            <button class="book-btn">Reserve</button>
+                        </div>
+                    </div>
+                </li>
+                <!-- li -->
+            </ul>
+        </div>
+    </div>
+    <script src="./js/index.js"></script>
+</body>
+</html>
