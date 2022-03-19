@@ -1,6 +1,5 @@
 const Auth = require("express").Router();
 const expressAsynchHandler = require("express-async-handler");
-// const bcrpt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuid").v4;
 const conn = require("mysql").createConnection({
@@ -31,10 +30,6 @@ Auth.post("/signup",expressAsynchHandler(async(req , res)=>{
         })
     }
     // 
-
-    // create a user and push the user to database
-    // const salt = await bcrpt.genSalt(10);
-    // const hashedPassword = await bcrpt.hash(password,salt);
 
     // create a unique user id
     const userID = uuid();
@@ -107,7 +102,7 @@ Auth.post("/login" , expressAsynchHandler(async (req , res)=>{
 
 Auth.post("/getpage" , Protect , (req ,res)=>{
     if(req.user){
-       const{ email , userID , identity ,previledge  } = req.user[0];
+       const{ previledge  } = req.user[0];
        res.json({
            error:false,
            message:`User was found , redirect to :${previledge == "student" ? "client page" :"admin page"}`,

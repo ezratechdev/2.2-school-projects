@@ -18,7 +18,9 @@ Client.get("/getavailable" , Protector , (req , res)=>{
             status:404,
         })
     }
-    const { previledge } = req.user;
+
+    const { previledge , userID } = req.user[0];
+    console.log(userID);
     if(previledge == "admin"){
         res.json({
             error:true,
@@ -26,7 +28,7 @@ Client.get("/getavailable" , Protector , (req , res)=>{
         })
     }
     // end of auth
-    const getAvailableQuerry = "SELECT * FROM equipments where NOT (LENGTH(equipments.whohas) > 0)"
+    const getAvailableQuerry = "SELECT * FROM equipments where (NOT (LENGTH(equipments.whohas) > 0))";
     connector.query(getAvailableQuerry, (error , results , fields)=>{
         if(error){
             res.json({
@@ -43,7 +45,7 @@ Client.get("/getavailable" , Protector , (req , res)=>{
     })
 });
 // request for an equipment
-Client.get("/borrow/:equipmentID" , Protect , (req , res)=>{
+Client.get("/borrow/:equipmentID" , Protector , (req , res)=>{
     // authorize user
     if(!req.user){
         res.json({
@@ -52,7 +54,9 @@ Client.get("/borrow/:equipmentID" , Protect , (req , res)=>{
             status:404,
         })
     }
-    const { previledge } = req.user;
+    const { previledge , userID } = req.user[0];
+    console.log(userID);
+    
     if(previledge == "admin"){
         res.json({
             error:true,
@@ -69,6 +73,7 @@ Client.get("/borrow/:equipmentID" , Protect , (req , res)=>{
     }
 
     const checkQuerry = "SELECT state, taken , requested , whohas FROM equipments where equipments.equipmentID='"+equipmentID+"'"
+    const bookQuerry = "UPDATE equipments SET requested='true',whohas='"+userID+"' WHERE equipments.equipmentID='"+equipmentID+"'";
     connector.query(checkQuerry , (error , results , fields)=>{
         if(error){
             res.json({
@@ -78,10 +83,26 @@ Client.get("/borrow/:equipmentID" , Protect , (req , res)=>{
             });
         }
         const { state , taken , requested , whohas } = results[0];
-        if(!(state == "present") && !(requested == "false") && !whohas.length == 0){
+        if(!((state == "present") && (requested == "false") && whohas.length > 0)){
             res.json({
                 error:true,
                 message:`Equipment has already been booked`,
+            })
+        }else{
+            // now set it as booked -- booked and user id d
+            connector.query(bookQuerry, (error)=>{
+                if(error){
+                    res.json({
+                        error:true,
+                        message:`Faced an error while requesting for the equipment\n${error}`,
+                        status:500,
+                    });
+                }
+                res.json({
+                    error:false,
+                    message:`Equipment with id ${equipmentID} has been successfully requested for booking`,
+                    status:200,
+                })
             })
         }
     });

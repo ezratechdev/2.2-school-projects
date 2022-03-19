@@ -29,7 +29,6 @@ const Protect = (req , res , next)=>{
                 connector.query(query,(error,result,fields)=>{
                     if(!error){
                         req.user = result;
-                        console.log(result);
                         next();
                     }
                 });

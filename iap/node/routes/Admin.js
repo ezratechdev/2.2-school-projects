@@ -17,7 +17,7 @@ const uuid = require("uuid").v4;
 // protected routes
 
 // get all equipments
-Admin.get("/getall", Protect , (req, res) => {
+Admin.get("/getall", Protect, (req, res) => {
     // console.log("hi");
     if (!req.user) res.json({
 
@@ -27,7 +27,7 @@ Admin.get("/getall", Protect , (req, res) => {
         status: 404,
     });
     // gain previledge
-    const { previledge } = req.user;
+    const { previledge } = req.user[0];
     if (previledge == "student") {
         res.json({
 
@@ -38,18 +38,18 @@ Admin.get("/getall", Protect , (req, res) => {
     }
 
     const getEquipments = "SELECT * FROM equipments";
-    connector.query(getEquipments,(error , result , fields)=>{
-        if(error){
+    connector.query(getEquipments, (error, result, fields) => {
+        if (error) {
             res.json({
-                error:true,
-                message:`An error occurred while fetching all equipments\n${error}`,
+                error: true,
+                message: `An error occurred while fetching all equipments\n${error}`,
             })
         }
         // console.log(result);
         res.json({
-            error:false,
-            message:`Equipments data obtained`,
-            equipments:result,
+            error: false,
+            message: `Equipments data obtained`,
+            equipments: result,
         })
     });
 
@@ -57,7 +57,7 @@ Admin.get("/getall", Protect , (req, res) => {
 
 // get single
 
-Admin.get("/getsingle/:id", Protect , (req, res) => {
+Admin.get("/getsingle/:id", Protect, (req, res) => {
     const { id } = req.params;
     if (!req.user) res.json({
 
@@ -67,7 +67,7 @@ Admin.get("/getsingle/:id", Protect , (req, res) => {
         status: 404,
     });
     // gain previledge
-    const { previledge } = req.user;
+    const { previledge } = req.user[0];
     if (previledge == "student") {
         res.json({
 
@@ -77,27 +77,27 @@ Admin.get("/getsingle/:id", Protect , (req, res) => {
         });
     }
 
-    if(!id){
+    if (!id) {
         res.json({
-            error:true,
-            message:`Equipment id was not passed`,
-            status:404,
+            error: true,
+            message: `Equipment id was not passed`,
+            status: 404,
         })
     }
 
-    const getEquipments = "SELECT * FROM equipments WHERE equipments.equipmentID='"+id+"'";
-    connector.query(getEquipments,(error , result , fields)=>{
-        if(error){
+    const getEquipments = "SELECT * FROM equipments WHERE equipments.equipmentID='" + id + "'";
+    connector.query(getEquipments, (error, result, fields) => {
+        if (error) {
             res.json({
-                error:true,
-                message:`An error occurred while fetching all equipments\n${error}`,
+                error: true,
+                message: `An error occurred while fetching all equipments\n${error}`,
             })
         }
         // console.log(result);
         res.json({
-            error:false,
-            message:`Equipments data obtained`,
-            equipments:result,
+            error: false,
+            message: `Equipments data obtained`,
+            equipments: result,
         })
     });
 
@@ -114,7 +114,7 @@ Admin.post("/create", Protect, (req, res) => {
         status: 404,
     });
     // gain previledge
-    const { previledge } = req.user;
+    const { previledge } = req.user[0];
     if (previledge == "student") {
         res.json({
 
@@ -166,7 +166,7 @@ Admin.get("/delete/:id", Protect, (req, res) => {
         status: 404,
     });
     // gain previledge
-    const { previledge } = req.user;
+    const { previledge } = req.user[0];
     if (previledge == "student") {
         res.json({
 
@@ -184,16 +184,15 @@ Admin.get("/delete/:id", Protect, (req, res) => {
 
         })
     }
-    console.log(id);
-    const deleteQuerry = "UPDATE equipments SET state='deleted' WHERE equipmentID='"+id+"'";
-    const restoreQuerry = "UPDATE equipments SET state='present' WHERE equipmentID='"+id+"'";
-    const getQuerry = "SELECT * FROM equipments WHERE equipments.equipmentID='"+id+"'";
-    connector.query(getQuerry, (error , result , fields )=>{
-        if(error){
+    const deleteQuerry = "UPDATE equipments SET state='deleted' WHERE equipmentID='" + id + "'";
+    const restoreQuerry = "UPDATE equipments SET state='present' WHERE equipmentID='" + id + "'";
+    const getQuerry = "SELECT * FROM equipments WHERE equipments.equipmentID='" + id + "'";
+    connector.query(getQuerry, (error, result, fields) => {
+        if (error) {
             res.json({
-                error:true,
-                message:`Unable to fetch equipment to delete`,
-                status:404,
+                error: true,
+                message: `Unable to fetch equipment to delete`,
+                status: 404,
             })
         }
         const { state } = result[0];
@@ -202,19 +201,19 @@ Admin.get("/delete/:id", Protect, (req, res) => {
         connector.query(`${state == "present" ? deleteQuerry : restoreQuerry}`, error => {
             if (error) {
                 res.json({
-    
+
                     error: true,
                     message: `Unable to ${state == "present" ? "delete" : "restore"} the equipment\n${error}`,
-    
+
                 });
             }
             res.json({
                 error: false,
-                message: `Equipment with id ${id} has been ${state == "present" ?"deleted" :"restored"}`,
+                message: `Equipment with id ${id} has been ${state == "present" ? "deleted" : "restored"}`,
             })
         });
     })
-    
+
 });
 
 
@@ -228,7 +227,7 @@ Admin.put("/update/:id", Protect, (req, res) => {
         status: 404,
     });
     // gain previledge
-    const { previledge } = req.user;
+    const { previledge } = req.user[0];
     if (previledge == "student") {
         res.json({
 
@@ -263,7 +262,7 @@ Admin.put("/update/:id", Protect, (req, res) => {
 });
 
 // approve equipment 
-Admin.get("/approve/:id",Protect,(req ,res)=>{
+Admin.get("/approve/:id", Protect, (req, res) => {
     if (!req.user) res.json({
 
         error: true,
@@ -272,7 +271,7 @@ Admin.get("/approve/:id",Protect,(req ,res)=>{
         status: 404,
     });
     // gain previledge
-    const { previledge } = req.user;
+    const { previledge } = req.user[0];
     if (previledge == "student") {
         res.json({
 
@@ -281,54 +280,74 @@ Admin.get("/approve/:id",Protect,(req ,res)=>{
 
         });
     }
-    const { id  } = req.params;
-    if(!(id)){
+    const { id } = req.params;
+    if (!(id)) {
         res.json({
-            error:true,
-            message:`Equipment id and user id not passed`,
-            status:404,
+            error: true,
+            message: `Equipment id not passed`,
+            status: 404,
         });
     }
-    const checkQuerry = "SELECT state ,requested , taken , whohas from equipments WHERE equipments.equipmentID='"+id+"'";
-    connector.query(checkQuerry,(error , results , fields)=>{
-        if(error){
+    const approveQuerry = "UPDATE equipments SET taken='true' where (equipments.equipmentID='"+id+"') AND (equipments.taken='false') AND (equipments.state='present') AND (equipments.requested='true')";
+    connector.query(approveQuerry, (error) => {
+        if (error) {
             res.json({
-                error:true,
-                message:`Unable to get and verify equipment\n${error}`,
-                equipmentID:id,
-                userID,
+                error: true,
+                message: `Unable to approve equipment transfer\n${error}`,
+                status: 500,
             });
-            // ensure equipment is not already reserved
-            const { state , requested , taken , whohas } = results[0];
-            if(!(state == 'present' && requested == 'false' && taken == 'false') || !whohas.length > 0){
-                res.json({
-                    error:true,
-                    message:`Equipment is already taken and cannot approved as taken as it is already under reservation\nContact admin for further aid`,
-                    status:404,
-                })
-            }else{
-                // 
-                const approveQuerry = "UPDATE equipments SET state='taken' , requested='true', taken='true' where equipments.equipmentID='"+id+"'";
-                connector.query(approveQuerry,(error)=>{
-                    if(error){
-                        res.json({
-                            error:true,
-                            message:`Unable to approve equipment transfer\n${error}`,
-                            status:500,
-                        });
-                    }
-                    res.json({
-                        error:false,
-                        message:`Equipment currently under user with id of ${userID}`,
-                        userID,
-                        id,
-                    })
-                });
-            }
         }
+        res.json({
+            error: false,
+            message: `Equipment has been assigned to a student`,
+            id,
+        })
     });
-    // 
 });
 
+
+// approve equipment 
+Admin.get("/return/:id", Protect, (req, res) => {
+    if (!req.user) res.json({
+
+        error: true,
+        message: `User not found`,
+
+        status: 404,
+    });
+    // gain previledge
+    const { previledge } = req.user[0];
+    if (previledge == "student") {
+        res.json({
+
+            error: true,
+            message: `You are not authorized to perform this operation`,
+
+        });
+    }
+    const { id } = req.params;
+    if (!(id)) {
+        res.json({
+            error: true,
+            message: `Equipment id not passed`,
+            status: 404,
+        });
+    }
+    const approveQuerry = "UPDATE equipments SET taken='false' , whohas='' , requested='false'  where (equipments.equipmentID='"+id+"') AND (equipments.taken='true') AND (equipments.state='present') AND (equipments.requested='true')";
+    connector.query(approveQuerry, (error) => {
+        if (error) {
+            res.json({
+                error: true,
+                message: `Unable to approve equipment return\n${error}`,
+                status: 500,
+            });
+        }
+        res.json({
+            error: false,
+            message: `Equipment has been relinquished from student and is now back in the inventory`,
+            id,
+        })
+    });
+});
 
 module.exports = Admin;

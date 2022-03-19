@@ -12,6 +12,7 @@ window.onload = async event => {
         container.classList.remove("right-panel-active");
     });
     // end of form getter
+    // start of redirect
     const whereToRedirect = async (token) => {
         let pageTo;
         let pageError;
@@ -45,6 +46,7 @@ window.onload = async event => {
             })
         return { pageTo, pageError, pageMessage };
     }
+    // end of redirect determine
     const signUpForm = document.getElementById("signUpForm");
     const token = localStorage.getItem("authkey");
     if (token) {

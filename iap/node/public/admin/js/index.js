@@ -22,9 +22,10 @@ window.onload = async event => {
 	// create boxes
 
 	const listHolder = document.getElementsByClassName("list")[0];
-	const BoxCreator = ({ name, description, state, id, requested, whohas }) => {
+	const BoxCreator = ({ name, description, state, id, requested, whohas , taken }) => {
 		// listHolder.innerHTML = ``;
-		let newBox = document.createElement("div")
+		let newBox = document.createElement("div");
+		newBox.setAttribute("id",id);
 		newBox.classList.add("box");
 		const div1 = document.createElement('div');
 		// div 1
@@ -41,11 +42,13 @@ window.onload = async event => {
 		div2.classList.add("box-actions");
 
 		const button1 = document.createElement("button");
-		button1.innerHTML = `${(requested == "false" && !whohas.length > 0) ? "Lease Out" : "Approve"}`;
+		button1.innerHTML = `${(requested == "true" && whohas.length > 0) ? (taken == "false") ? "Lease out" : "Approve Return" : "No return Action"}`;
 
 		button1.addEventListener("click", async () => {
-			if ((requested == "false" && !whohas.length > 0)) {
-				await fetch(`/admin/approve/${whohas}`, {
+			console.log("hi",requested,whohas.length);
+			if ((requested == "true" && whohas.length > 0 && taken == "false")) {
+				console.log("am running",id);
+				await fetch(`/admin/approve/${id}`, {
 					method: "GET",
 					headers: new Headers({
 						'Content-Type': 'application/json',
@@ -56,11 +59,26 @@ window.onload = async event => {
 					.then(data => data.json())
 					.then(results => {
 						// change the inner html
-						console.log(results)
+						console.log(results,"from approve point")
+						window.location.href = window.location.href;
 					})
 					.catch(error => console.log(error));
 			} else {
-				console.log("Equipment not requested for");
+				await fetch(`/admin/return/${id}`, {
+					method: "GET",
+					headers: new Headers({
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${token}`,
+					}),
+					body: null,
+				})
+					.then(data => data.json())
+					.then(results => {
+						// change the inner html
+						console.log(results,"from return point")
+						window.location.href = window.location.href;
+					})
+					.catch(error => console.log(error))
 			}
 		});
 
@@ -127,6 +145,7 @@ window.onload = async event => {
 						id: equipment.equipmentID,
 						requested: equipment.requested,
 						whohas,
+						taken,
 					});
 				})
 			})
@@ -191,6 +210,7 @@ window.onload = async event => {
 	const logOut = document.getElementById("logOut");
 	logOut.addEventListener("click" , async event=>{
 		localStorage.removeItem("authkey");
+		// ../cs
 		window.location.href = "../index.html";
 	})
 }
