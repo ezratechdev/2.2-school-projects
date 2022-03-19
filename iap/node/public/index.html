@@ -10,25 +10,12 @@
 </head>
 
 <body>
-    <!-- <form id="signUpForm">
-        <input type="text" name="email" placeholder="Email" required>
-        <input type="text" name="identity" placeholder="identity" required>
-        <input type="text" name="previledge" placeholder="previledge" required>
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="text" name="password" placeholder="password" required>
-        <input type="text" name="confirmPassword" placeholder="Confirm Password" required> <br>
-        <input type="submit" value="Sign Up">
-    </form> -->
     <div class="main">
         <h2>Welcome to GIS inventory</h2>
         <div class="container" id="container">
             <div class="form-container sign-up-container">
                 <form action="#" id="signUpForm">
                     <h1>Create Account</h1>
-                    <span>or use your email for registration</span>
-                    <!-- <input type="text" placeholder="Name" />
-			<input type="email" placeholder="Email" />
-			<input type="password" placeholder="Password" /> -->
                     <input type="email" name="email" placeholder="Email" required>
                     <input type="text" name="identity" placeholder="identity" required>
                     <input type="text" name="previledge" placeholder="previledge" required>
@@ -41,10 +28,8 @@
             <div class="form-container sign-in-container">
                 <form id="loginForm">
                     <h1>Sign in</h1>
-                    <span>or use your account</span>
-                    <input type="email" name="email" placeholder="Email" />
-                    <input type="password" name="password" placeholder="Password" />
-                    <a href="#">Forgot your password?</a>
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="password" name="password" placeholder="Password" required/>
                     <button>Sign In</button>
                 </form>
             </div>
@@ -52,12 +37,12 @@
                 <div class="overlay">
                     <div class="overlay-panel overlay-left">
                         <h1>Welcome Back!</h1>
-                        <p>To keep connected with us please login with your personal info</p>
+                        <p>To get back to the sweet GIS inventory system log in with your personal details</p>
                         <button class="ghost" id="signIn">Sign In</button>
                     </div>
                     <div class="overlay-panel overlay-right">
-                        <h1>Hello, Friend!</h1>
-                        <p>Enter your personal details and start journey with us</p>
+                        <h1>Hello!</h1>
+                        <p>Enter your personal details and enjoy the fluid equipments inventory system</p>
                         <button class="ghost" id="signUp">Sign Up</button>
                     </div>
                 </div>

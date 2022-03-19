@@ -17,7 +17,8 @@ const uuid = require("uuid").v4;
 // protected routes
 
 // get all equipments
-Admin.get("/", Protect, (req, res) => {
+Admin.get("/getall", Protect , (req, res) => {
+    // console.log("hi");
     if (!req.user) res.json({
 
         error: true,
@@ -44,6 +45,7 @@ Admin.get("/", Protect, (req, res) => {
                 message:`An error occurred while fetching all equipments\n${error}`,
             })
         }
+        // console.log(result);
         res.json({
             error:false,
             message:`Equipments data obtained`,
@@ -51,7 +53,56 @@ Admin.get("/", Protect, (req, res) => {
         })
     });
 
-})
+});
+
+// get single
+
+Admin.get("/getsingle/:id", Protect , (req, res) => {
+    const { id } = req.params;
+    if (!req.user) res.json({
+
+        error: true,
+        message: `User not found`,
+
+        status: 404,
+    });
+    // gain previledge
+    const { previledge } = req.user;
+    if (previledge == "student") {
+        res.json({
+
+            error: true,
+            message: `You are not authorized to perform this operation`,
+
+        });
+    }
+
+    if(!id){
+        res.json({
+            error:true,
+            message:`Equipment id was not passed`,
+            status:404,
+        })
+    }
+
+    const getEquipments = "SELECT * FROM equipments WHERE equipments.equipmentID='"+id+"'";
+    connector.query(getEquipments,(error , result , fields)=>{
+        if(error){
+            res.json({
+                error:true,
+                message:`An error occurred while fetching all equipments\n${error}`,
+            })
+        }
+        // console.log(result);
+        res.json({
+            error:false,
+            message:`Equipments data obtained`,
+            equipments:result,
+        })
+    });
+
+});
+// 
 
 // create an equipment
 Admin.post("/create", Protect, (req, res) => {
@@ -133,21 +184,37 @@ Admin.get("/delete/:id", Protect, (req, res) => {
 
         })
     }
-    const deleteQuerry = "UPDATE equipments SET state='deleted' WHERE equipmentID='" + id + "'";
-    connector.query(deleteQuerry, error => {
-        if (error) {
+    console.log(id);
+    const deleteQuerry = "UPDATE equipments SET state='deleted' WHERE equipmentID='"+id+"'";
+    const restoreQuerry = "UPDATE equipments SET state='present' WHERE equipmentID='"+id+"'";
+    const getQuerry = "SELECT * FROM equipments WHERE equipments.equipmentID='"+id+"'";
+    connector.query(getQuerry, (error , result , fields )=>{
+        if(error){
             res.json({
-
-                error: true,
-                message: `Unable to delete the equipment\n${error}`,
-
-            });
+                error:true,
+                message:`Unable to fetch equipment to delete`,
+                status:404,
+            })
         }
-        res.json({
-            error: false,
-            message: `Equipment with id ${id} has been deleted`,
-        })
+        const { state } = result[0];
+
+        // toggle state
+        connector.query(`${state == "present" ? deleteQuerry : restoreQuerry}`, error => {
+            if (error) {
+                res.json({
+    
+                    error: true,
+                    message: `Unable to ${state == "present" ? "delete" : "restore"} the equipment\n${error}`,
+    
+                });
+            }
+            res.json({
+                error: false,
+                message: `Equipment with id ${id} has been ${state == "present" ?"deleted" :"restored"}`,
+            })
+        });
     })
+    
 });
 
 
@@ -187,7 +254,7 @@ Admin.put("/update/:id", Protect, (req, res) => {
                 message: `Unable to update equipment\n${error}`,
             })
         }
-        req.json({
+        res.json({
             error: false,
             message: `Equipment with id ${id} has been updated`,
             status: 200,

@@ -6,6 +6,7 @@ const Server = require("http").createServer(app);
 const path = require("path");
 const Auth= require("./routes/Auth");
 const Admin = require("./routes/Admin");
+const Client = require("./routes/Client");
 const {ResponseFunction} = require("./components/Response");
 // create a connection to the database
 const connection = mysql.createConnection({
@@ -22,14 +23,11 @@ app.use(express.urlencoded({extended:true}));
 // custom paths
 app.use("/auth",Auth);
 app.use("/admin",Admin);
+app.use("/client",Client);
+// end of middleware
 
 app.get("/" , (req , res)=>{
-    const INSERT = "INSERT INTO text (text) values ('hi')";
-    // connection.query(INSERT,error=>{
-    //     if(error) throw new Error(`Unable to insert record : error \n${error}`);
-    //     else console.log("Record inserted");
-    // });
-    res.sendFile("app.html");
+    res.sendFile("index.html");
 })
 
 
