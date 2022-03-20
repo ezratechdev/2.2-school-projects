@@ -22,10 +22,10 @@ window.onload = async event => {
 	// create boxes
 
 	const listHolder = document.getElementsByClassName("list")[0];
-	const BoxCreator = ({ name, description, state, id, requested, whohas , taken }) => {
+	const BoxCreator = ({ name, description, state, requested, whohas , taken } , equipmentID) => {
 		// listHolder.innerHTML = ``;
 		let newBox = document.createElement("div");
-		newBox.setAttribute("id",id);
+		newBox.setAttribute("id",equipmentID);
 		newBox.classList.add("box");
 		const div1 = document.createElement('div');
 		// div 1
@@ -42,7 +42,38 @@ window.onload = async event => {
 		div2.classList.add("box-actions");
 
 		const button1 = document.createElement("button");
-		button1.innerHTML = "Request"
+		// console.log(equipmentID);
+		
+		button1.innerHTML = `${(( taken== 'true' && whohas.length > 0) ? "Return" : (requested == 'true' ? "Pending Approval" : "Request"))}`;
+		button1.addEventListener("click" , async event=>{
+			if((whohas.length > 0 && taken == 'true')){
+				// user to return
+				console.log("return equipment");
+				
+			}else if((!(whohas.length > 0 && taken == 'true') && requested == 'true')){
+				// pending approval -- do nothing
+				console.log("Am supposed to do nothing");
+			}else if((!(whohas.length > 0 && taken == 'true') && requested == 'false')){
+				// request for equipment
+				console.log("requesting for equipment");
+				await fetch(`/client/borrow/${equipmentID}`,{
+					method:"GET",
+					headers: new Headers({
+						'Content-Type':'application/json',
+						'Authorization':`Bearer ${token}`,
+					}),
+					body:null,
+				})
+				.then(data => data.json())
+				.then(result => {
+					console.log(result);
+					window.location.href = window.location.href;
+				})
+				.catch(error => console.log(error,"error found"));
+			}else{
+				console.log("I am literally supposed to do nothing!!");
+			}
+		});
 
 
 
@@ -74,10 +105,15 @@ window.onload = async event => {
             }
             equipments.forEach(equipment =>{
                 const { description , equipmentID , name , requested , state , taken , whohas} = equipment;
+				
                 BoxCreator({
                     name,
                     description,
-                })
+					state,
+					requested,
+					whohas,
+					taken,
+                },equipment.equipmentID)
             });
         })
         .catch(error => console.log(error));

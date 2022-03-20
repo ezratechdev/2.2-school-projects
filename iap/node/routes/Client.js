@@ -28,7 +28,8 @@ Client.get("/getavailable" , Protector , (req , res)=>{
         })
     }
     // end of auth
-    const getAvailableQuerry = "SELECT * FROM equipments where (NOT (LENGTH(equipments.whohas) > 0))";
+    const getAvailableQuerry = "SELECT * FROM equipments where ((NOT (LENGTH(equipments.whohas) > 0)) OR (equipments.whohas ='"+userID+"')) AND (NOT equipments.taken='true') AND (equipments.state='present')";
+    // const getAvailableQuerry = "SELECT * FROM equipments (CASE equipments.whohas='' THEN NULL ELSE equipments.whohas='"+userID+"' END) AND (NOT equipments.taken='true') AND (equipments.state='present'";
     connector.query(getAvailableQuerry, (error , results , fields)=>{
         if(error){
             res.json({
@@ -83,7 +84,7 @@ Client.get("/borrow/:equipmentID" , Protector , (req , res)=>{
             });
         }
         const { state , taken , requested , whohas } = results[0];
-        if(!((state == "present") && (requested == "false") && whohas.length > 0)){
+        if(!((state == "present") && (requested == "false") && !whohas.length > 0)){
             res.json({
                 error:true,
                 message:`Equipment has already been booked`,

@@ -28,6 +28,12 @@
    --clr-gray: #37474f;
    --clr-gray-light: #b0bec5;
    /* end of added */
+
+   /* modal variables */
+   --modal-duration: 1s;
+  /* --modal-color: #428bca; */
+  --modal-color:#FF4B2B;
+   /* end of modal variables */
 }
 @media screen and (min-width: 968px) {
 	:root {
@@ -208,4 +214,141 @@ nav li a:hover {
     color: white;
  }
 }
+
+
 /* end of append nav bar */
+
+
+/* modal css start */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  margin: 10% auto;
+  width: 60%;
+  box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);
+  animation-name: modalopen;
+  animation-duration: var(--modal-duration);
+}
+
+.modal-header h2,
+.modal-footer h3 {
+  margin: 0;
+}
+
+.modal-header {
+  background: var(--modal-color);
+  padding: 15px;
+  color: #fff;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.modal-body {
+  padding: 10px 20px;
+  background: #fff;
+}
+
+.modal-footer {
+  background: var(--modal-color);
+  padding: 10px;
+  color: #fff;
+  text-align: center;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.close {
+  color: #ccc;
+  float: right;
+  font-size: 30px;
+  color: #fff;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@keyframes modalopen {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* open modal btn */
+/* From cssbuttons.io by @adamgiebl */
+#modal-btn {
+  background: #A370F0;
+  color: white;
+  font-family: inherit;
+  padding: 0.35em;
+  padding-left: 1.2em;
+  font-size: 17px;
+  font-weight: 500;
+  border-radius: 0.9em;
+  border: none;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  box-shadow: inset 0 0 1.6em -0.6em #714da6;
+  overflow: hidden;
+  position: relative;
+  height: 2.8em;
+  padding-right: 3.3em;
+ }
+ 
+ #modal-btn .icon {
+  background: white;
+  margin-left: 1em;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.2em;
+  width: 2.2em;
+  border-radius: 0.7em;
+  box-shadow: 0.1em 0.1em 0.6em 0.2em #7b52b9;
+  right: 0.3em;
+  transition: all 0.3s;
+ }
+ 
+ #modal-btn:hover .icon {
+  width: calc(100% - 0.6em);
+ }
+ 
+ #modal-btn .icon svg {
+  width: 1.1em;
+  transition: transform 0.3s;
+  color: #7b52b9;
+ }
+ 
+ #modal-btn:hover .icon svg {
+  transform: translateX(0.1em);
+ }
+ 
+ #modal-btn:active .icon {
+  transform: scale(0.95);
+ }
+ 
+
+/* end of modal css */
+
+.addBtn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
