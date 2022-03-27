@@ -118,5 +118,30 @@ Auth.post("/getpage" , Protect , (req ,res)=>{
 } )
 
 
+Auth.post("/resetpassword" , (req , res)=>{
+    const { email , password , newPassword } = req.body;
+    if((typeof email == "undefined" || typeof password == "undefined" || typeof newPassword == "undefined")) {
+        res.json({
+            error:true,
+            message:`${((typeof email == "undefined")) ? ((typeof password == "undefined")) ? "email and password" : "email" : "password"} not passed`
+        })
+    }
+    const updateQuerry = "UPDATE users set password='"+newPassword+"' WHERE email='"+email+"' AND password='"+password+"'";
+    conn.query(updateQuerry,(error)=>{
+        if(error){
+            res.json({
+                error:true.valueOf,
+                message:`Faced an error updating the user's password\n${error}`,
+                status:500,
+            })
+        }
+        res.json({
+            error:false,
+            message:`User password updated successfully`,
+            status:200,
+        })
+    });
+})
+
 
 module.exports = Auth;
