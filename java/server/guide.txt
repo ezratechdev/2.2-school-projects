@@ -1,0 +1,2 @@
+1.Have the following technologies installed : node js , yarn - a software packaging system
+2.Open the the server folder on the terminal and run yarn start
