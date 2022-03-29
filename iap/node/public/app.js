@@ -58,7 +58,7 @@ window.onload = async event => {
             window.location.href = `./${pageTo}/index.html`;
         } else {
             // unable to log in to any page
-            console.log("there was an error bana!!", pageMessage)
+            alert("Unable to redirect you to any page");
         }
         console.log("user is logged in")
     } else console.log("user is not logged in");
@@ -90,11 +90,11 @@ window.onload = async event => {
                             window.location.href = `./${pageTo}/index.html`;
                         } else {
                             // unable to log in to any page
+                            console.log(`Error ${error}:${message}`);
                         }
-                        // console.log(token,"\n",message);
                     } else {
                         // token not obtained show error
-                        console.log("token not obtained");
+                        alert("token not obtained");
                     }
                 })
                 .catch(error => {
@@ -130,11 +130,11 @@ window.onload = async event => {
                 // console.log(token,"\n",message);
             } else {
                 // token not obtained show error
-                console.log("token not obtained");
+                alert("token not obtained");
             }
         })
         .catch(error => {
-            console.log(`An error occurred`);
+            alert(`An error occurred:${error}`);
         })
     });
 }

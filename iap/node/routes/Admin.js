@@ -1,5 +1,8 @@
 const Admin = require("express").Router();
 const Protect = require("../middleware/Protector");
+const multer = require("multer");
+const e = require("express");
+
 // const ResponseFunction = require("../components/Response");
 const connector = require("mysql").createConnection({
     host: "localhost",
@@ -46,11 +49,19 @@ Admin.get("/getall", Protect, (req, res) => {
             })
         }
         // console.log(result);
-        res.json({
-            error: false,
-            message: `Equipments data obtained`,
-            equipments: result,
-        })
+        if(result.length > 0){
+            res.json({
+                error: false,
+                message: `Equipments data obtained`,
+                equipments: result,
+            })
+        }else{
+            res.json({
+                error: false,
+                message: `Equipments data obtained`,
+                equipments: [],
+            })
+        }
     });
 
 });
@@ -103,9 +114,28 @@ Admin.get("/getsingle/:id", Protect, (req, res) => {
 
 });
 // 
+const randomNumberFunc = (initial,final)=>{
+    // returns random number between inital and final
+    if(final > initial)
+    return initial + (Math.floor(Math.random() * final));
+    else return randomNumberFunc(50,200);
+}
 
+const randomStringName = ()=>{
+    return `${randomNumberFunc(40,60)}${randomNumberFunc(50,200)}${randomNumberFunc(10,20)}${randomNumberFunc(0,1)}`;
+}
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads');
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${randomStringName()+`.`+file.originalname.split(`.`)[file.originalname.split(`.`).length -1]}`);
+    },
+});
+const upload = multer({ storage });
 // create an equipment
-Admin.post("/create", Protect, (req, res) => {
+Admin.post("/create", [Protect , upload.single("image")], (req, res) => {
     if (!req.user) res.json({
 
         error: true,
@@ -125,7 +155,7 @@ Admin.post("/create", Protect, (req, res) => {
     }
     // add image later using multer
     const { name, description } = req.body;
-    if (!(name && description)) {
+    if (!(name && description && req.file)) {
         res.json({
 
             error: true,
@@ -134,19 +164,20 @@ Admin.post("/create", Protect, (req, res) => {
         })
     }
     // generate id
+    var imgsrc = `http://localhost/uploads/${req.file.filename}`;
     const equipmentID = uuid();
+    console.log((req.file.filename)+"image"+"previledge");
     // push data to database
-    const insertQuerry = "INSERT INTO equipments (name , description , equipmentID , state , taken , requested ,whohas ) VALUES ('" + name + "' ,'" + description + "' ,'" + equipmentID + "' , 'present' , 'false' ,'false' ,'')";
+    const insertQuerry = "INSERT INTO equipments (name , description , equipmentID , state , taken , requested ,whohas , image ) VALUES ('" + name + "' ,'" + description + "' ,'" + equipmentID + "' , 'present' , 'false' ,'false' , '' ,'"+imgsrc+"')";
     connector.query(insertQuerry, (error) => {
         if (error) {
             res.json({
-
                 error: true,
                 message: `Unable to create equipment on database\n${error}`,
-
             })
-        } res.json({
-
+            console.log("error",error);
+            return;
+        } else res.json({
             error: false,
             message: `Equipment with id of ${equipmentID} has been created`,
             id: equipmentID,

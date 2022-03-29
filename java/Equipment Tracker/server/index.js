@@ -27,7 +27,7 @@ app.use("/client",Client);
 // end of middleware
 
 app.get("/" , (req , res)=>{
-    res.sendFile("index.html");
+    res.send("Welcome to our java app\nThis is the server side\nBuilt with love by\n1.Ezra kipyegon C026-01-0739/2020\n2.Sally Muthoni C026-01-0688/202\n3.John Mwangi C026-01-0682/2020\n4.Emmanuel Nakitare C026-01-0737/2020");
 })
 
 

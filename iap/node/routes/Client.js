@@ -38,11 +38,19 @@ Client.get("/getavailable" , Protector , (req , res)=>{
                 status:404,
             })
         }
-        res.json({
-            error:false,
-            message:`Got equipments`,
-            equipments:results,
-        })
+        if(results.length > 0){
+            res.json({
+                error:false,
+                message:`Got equipments`,
+                equipments:results,
+            })
+        }else{
+            res.json({
+                error:false,
+                message:`Got equipments`,
+                equipments:[],
+            })
+        }
     })
 });
 // request for an equipment

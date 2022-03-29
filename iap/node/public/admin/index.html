@@ -19,9 +19,10 @@
             <h2>Add an Equipment Here</h2>
           </div>
           <div class="modal-body">
-            <form id="createEquipment">
-                <input type="text" name="name" placeholder="Name of Equipment">
-                <input type="text" name="description" placeholder="Description of the equipment">
+            <form id="createEquipment" method="POST" action="/admin/create" enctype="multipart/form-data">
+                <input type="text" name="name" placeholder="Name of Equipment"> <br>
+                <input type="text" name="description" placeholder="Description of the equipment"> <br>
+                <input type="file" name="image" required> <br>
                 <input type="submit" value="Create">
             </form>
           </div>

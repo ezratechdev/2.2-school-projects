@@ -141,7 +141,6 @@ window.onload = async event => {
 				listHolder.innerHTML = ``;
 				equipments.forEach(equipment => {
 					const { description, equipmentID, name, requested, state, taken, whohas } = equipment;
-					console.log(equipment);
 					BoxCreator({
 						name,
 						description,
@@ -156,22 +155,34 @@ window.onload = async event => {
 			.catch(error => console.log(error, "error data"));
 	}
 	await getAllEquipments();
+	// generate random name for file name
+	const randomName = (type)=>{
+		const fileType = type.split(".")[1];
+		return `${Math.floor(150 * Math.random())}--i${Math.floor(150 * Math.random())}-ma-${Math.floor(150 * Math.random())}--ge-${Math.floor(150 * Math.random())}.${fileType}`;
+	}
 	// end of get all equipments
 	// creating an equipment
 	const createEquipment = document.getElementById("createEquipment");
 	createEquipment.addEventListener("submit", async event => {
 		event.preventDefault();
-		const { name, description } = createEquipment;
+		const { name, description , image } = createEquipment;
+		image.files[0].name = `${randomName(image.files[0].name)}`;
+		console.log(image.files[0].name);
+		const formData = new FormData();
+		formData.append("name",name.value);
+		formData.append("description",description.value);
+		formData.append("image",image.files[0]);
 		await fetch("/admin/create", {
 			method: "POST",
 			headers: new Headers({
-				'Content-Type': 'application/json',
+				// 'Content-Type': 'multipart/form-data', // from application/json
 				'Authorization': `Bearer ${token}`,
 			}),
-			body: JSON.stringify({
-				name: name.value,
-				description: description.value,
-			})
+			body:formData,
+			// body: JSON.stringify({
+			// 	name: name.value,
+			// 	description: description.value,
+			// })
 		})
 			.then(data => data.json())
 			.then(result => {

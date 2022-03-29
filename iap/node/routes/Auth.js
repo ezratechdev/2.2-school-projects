@@ -72,11 +72,14 @@ Auth.post("/login" , expressAsynchHandler(async (req , res)=>{
             res.json({
                 ...ResponseFunction({
                     error:true,
-                    message:`An error occured\n${error}`,
+                    message:`Invalid details sent.User does not exist\n${error}`,
                 }),
             })
         }
-        if(result){
+        if(typeof result != "undefined" && result.length > 0){
+            // const usersData = {
+            //     ...
+            // };
             console.log(result,result.length);
             const { userID , email} = result[0];
             const gainedPassword = result[0].password;
@@ -96,7 +99,7 @@ Auth.post("/login" , expressAsynchHandler(async (req , res)=>{
                     })
                 })
             }
-        } else res.send(result);
+        } else res.send(result+"invalid credentials");
     });
 }));
 
@@ -116,6 +119,39 @@ Auth.post("/getpage" , Protect , (req ,res)=>{
     });
 } )
 
+Auth.post("/reset" , Protect , (req , res)=>{
+    const { password , userID , email } = req.user[0];
+    const {oldPass , newPass } = req.body;
+    if(!(oldPass && newPass)){
+        res.json({
+            error:true,
+            message:`Old or new password was not passed`,
+        });
+    }
+    console.log("end point hit");
+    if(password == oldPass){
+        const updateQuerry = "UPDATE users SET users.password='"+newPass+"' WHERE users.userID='"+userID+"'";
+        conn.query(updateQuerry ,(error)=>{
+            if(error){
+                res.json({
+                    error:true,
+                    message:`Faced some error from the server\n${error}`,
+                    status:500,
+                })
+            }
+            res.json({
+                error:false,
+                message:`Password for ${email} has been updated succesfully`,
+                status:200,
+            })
+        })
+    }else{
+        res.json({
+            error:true,
+            message:`Your current password is incorrect`
+        })
+    }
+});
 
 
 module.exports = Auth;

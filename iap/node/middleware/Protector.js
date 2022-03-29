@@ -21,11 +21,9 @@ const Protect = (req , res , next)=>{
                     }),
                 })
             }
-            // console.log(token);
             const {id , operation} = jwt.verify(token, "secretsignkey");
             if(operation == "auth"){
-                // console.log(operation);
-                const query = "SELECT username , identity , email , previledge , userID  FROM users where users.userID='"+id+"'";
+                const query = "SELECT username , identity , email , previledge , userID , password  FROM users where users.userID='"+id+"'";
                 connector.query(query,(error,result,fields)=>{
                     if(!error){
                         req.user = result;
