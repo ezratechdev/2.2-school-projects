@@ -2,12 +2,7 @@ const Auth = require("express").Router();
 const expressAsynchHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const uuid = require("uuid").v4;
-const conn = require("mysql").createConnection({
-    host:"localhost",
-    user:"root",
-    password:"",
-    database:"GIS",
-});
+const conn = require("../components/connector");
 
 const {ResponseFunction}  = require("../components/Response");
 const Protect = require("../middleware/Protector");

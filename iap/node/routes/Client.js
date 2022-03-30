@@ -1,10 +1,5 @@
 const Client = require("express").Router();
-const connector = require("mysql").createConnection({
-    host:"localhost",
-    user:"root",
-    password:"",
-    database:"GIS",
-});
+const connector = require("../components/connector");
 const Protector = require("../middleware/Protector");
 
 

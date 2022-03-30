@@ -1,15 +1,9 @@
 const Admin = require("express").Router();
 const Protect = require("../middleware/Protector");
 const multer = require("multer");
-const e = require("express");
 
 // const ResponseFunction = require("../components/Response");
-const connector = require("mysql").createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "GIS",
-});
+const connector = require("../components/connector");
 const uuid = require("uuid").v4;
 
 

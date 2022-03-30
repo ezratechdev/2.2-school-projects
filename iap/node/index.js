@@ -1,5 +1,4 @@
 const express = require("express");
-const mysql = require("mysql");
 const port = 5000 || process.env.PORT;
 const app = express();
 const Server = require("http").createServer(app);
@@ -9,12 +8,7 @@ const Admin = require("./routes/Admin");
 const Client = require("./routes/Client");
 const {ResponseFunction} = require("./components/Response");
 // create a connection to the database
-const connection = mysql.createConnection({
-    host:"localhost",
-    user:"root",
-    password:"",
-    database:"GIS",
-});
+const connection = require("./components/connector");
 
 // middleware
 app.use(express.json());
