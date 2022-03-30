@@ -22,7 +22,7 @@ window.onload = async event => {
 	// create boxes
 
 	const listHolder = document.getElementsByClassName("list")[0];
-	const BoxCreator = ({ name, description, state, requested, whohas , taken } , equipmentID) => {
+	const BoxCreator = ({ name, description, state, requested, whohas , taken , image } , equipmentID) => {
 		// listHolder.innerHTML = ``;
 		let newBox = document.createElement("div");
 		newBox.setAttribute("id",equipmentID);
@@ -32,11 +32,17 @@ window.onload = async event => {
 		const h2 = document.createElement("h2");
 		h2.classList.add('box-name');
 		h2.innerHTML = name;
+		// 
+		const img = document.createElement("img");
+		img.classList.add("img-display")
+		img.setAttribute("src",image);
+		// 
 		const p = document.createElement("p");
 		p.classList.add('box-desc');
 		p.innerHTML = description;
 		div1.appendChild(h2);
-		div1.appendChild(p)
+		div1.appendChild(p);
+		div1.appendChild(img);
 		// div2
 		const div2 = document.createElement("div");
 		div2.classList.add("box-actions");
@@ -104,7 +110,7 @@ window.onload = async event => {
                 console.log("Unable to get available equipments")
             }
             equipments.forEach(equipment =>{
-                const { description , equipmentID , name , requested , state , taken , whohas} = equipment;
+                const { description , equipmentID , name , requested , state , taken , whohas , image} = equipment;
 				
                 BoxCreator({
                     name,
@@ -113,6 +119,7 @@ window.onload = async event => {
 					requested,
 					whohas,
 					taken,
+					image,
                 },equipment.equipmentID)
             });
         })

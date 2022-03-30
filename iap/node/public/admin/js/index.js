@@ -22,7 +22,7 @@ window.onload = async event => {
 	// create boxes
 
 	const listHolder = document.getElementsByClassName("list")[0];
-	const BoxCreator = ({ name, description, state, id, requested, whohas , taken }) => {
+	const BoxCreator = ({ name, description, state, id, requested, whohas , taken , image }) => {
 		// listHolder.innerHTML = ``;
 		let newBox = document.createElement("div");
 		newBox.setAttribute("id",id);
@@ -32,11 +32,17 @@ window.onload = async event => {
 		const h2 = document.createElement("h2");
 		h2.classList.add('box-name');
 		h2.innerHTML = name;
+		// 
+		const img = document.createElement("img");
+		img.classList.add("img-display")
+		img.setAttribute("src",image);
+		// 
 		const p = document.createElement("p");
 		p.classList.add('box-desc');
 		p.innerHTML = description;
 		div1.appendChild(h2);
 		div1.appendChild(p)
+		div1.appendChild(img);
 		// div2
 		const div2 = document.createElement("div");
 		div2.classList.add("box-actions");
@@ -109,11 +115,36 @@ window.onload = async event => {
 		button3.addEventListener("click" , async event =>{
 			sessionStorage.setItem("equipmentID",id);
 			window.location.href = './html/update.html';
-		})
+		});
+
+		// 
+		const button4 = document.createElement("button");
+		button4.innerHTML = `Remove`;
+		button4.addEventListener("click" , async event =>{
+			await fetch("/admin/permanentdelete" , {
+				method:"DELETE",
+				headers: new Headers({
+					'Content-Type':'application/json',
+					'Authorization':`Bearer ${token}`
+				}),
+				body:JSON.stringify({
+					equipmentID:id,
+				}),
+			})
+			.then(data => data.json())
+			.then(result =>{
+				window.location.href = window.location.href;
+				alert(result.message);
+			})
+			.catch(error => {
+				alert(error.message);
+			})
+		});
 		// 
 		div2.appendChild(button1)
 		div2.appendChild(button2)
 		div2.appendChild(button3)
+		div2.appendChild(button4)
 		// appends
 		newBox.appendChild(div1)
 		newBox.appendChild(div2)
@@ -134,13 +165,14 @@ window.onload = async event => {
 		})
 			.then(data => data.json())
 			.then(result => {
+				console.log(result);
 				const { equipments, error, message } = result;
 				if (!error && !equipments) {
 					console.log("unable to fetch equipments")
 				}
 				listHolder.innerHTML = ``;
 				equipments.forEach(equipment => {
-					const { description, equipmentID, name, requested, state, taken, whohas } = equipment;
+					const { description, equipmentID, name, requested, state, taken, whohas , image } = equipment;
 					BoxCreator({
 						name,
 						description,
@@ -149,6 +181,7 @@ window.onload = async event => {
 						requested: equipment.requested,
 						whohas,
 						taken,
+						image,
 					});
 				})
 			})

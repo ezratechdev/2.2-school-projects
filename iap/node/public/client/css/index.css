@@ -67,6 +67,7 @@ body {
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
+  height: auto;
 }
 
 .box:nth-of-type(even) {
@@ -237,4 +238,11 @@ nav li a:hover {
   }
 }
 
+
+
 /* end of append nav bar */
+
+.img-display{
+  width: 100%;
+  height: auto;
+}

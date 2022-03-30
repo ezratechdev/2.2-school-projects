@@ -127,7 +127,7 @@ const randomStringName = ()=>{
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './uploads');
+        cb(null, './public/uploads');
     },
     filename: function (req, file, cb) {
         cb(null, `${randomStringName()+`.`+file.originalname.split(`.`)[file.originalname.split(`.`).length -1]}`);
@@ -164,9 +164,8 @@ Admin.post("/create", [Protect , upload.single("image")], (req, res) => {
         })
     }
     // generate id
-    var imgsrc = `http://localhost/uploads/${req.file.filename}`;
+    var imgsrc = `/uploads/${req.file.filename}`;
     const equipmentID = uuid();
-    console.log((req.file.filename)+"image"+"previledge");
     // push data to database
     const insertQuerry = "INSERT INTO equipments (name , description , equipmentID , state , taken , requested ,whohas , image ) VALUES ('" + name + "' ,'" + description + "' ,'" + equipmentID + "' , 'present' , 'false' ,'false' , '' ,'"+imgsrc+"')";
     connector.query(insertQuerry, (error) => {
@@ -245,6 +244,53 @@ Admin.get("/delete/:id", Protect, (req, res) => {
         });
     })
 
+});
+
+Admin.delete("/permanentdelete" , Protect , (req , res)=>{
+    if (!req.user) res.json({
+
+        error: true,
+        message: `User not found`,
+
+        status: 404,
+    });
+    // gain previledge
+    const { previledge } = req.user[0];
+    if (previledge == "student") {
+        res.json({
+
+            error: true,
+            message: `You are not authorized to perform this operation`,
+
+        })
+        return;
+    }
+    const {equipmentID} = req.body;
+    if(!equipmentID){
+        res.json({
+            error:true,
+            message:`Equipment id was not passed`,
+            status:404,
+        });
+        return;
+    }
+    const deleteStatement = "DELETE FROM equipments WHERE equipments.equipmentID='"+equipmentID+"'";
+    connector.query(deleteStatement , (error)=>{
+        if(error){
+            res.json({
+                error:true,
+                message:`Unable to delete the record\n${error}`,
+                status:500,
+            });
+            return;
+        }else{
+            res.json({
+                error:false,
+                message:`Record deleted`,
+                status:200,
+            });
+        }
+    })
 });
 
 
