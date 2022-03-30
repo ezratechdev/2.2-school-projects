@@ -10,7 +10,7 @@ const {ResponseFunction} = require("./components/Response");
 // create a connection to the database
 const connection = require("./components/connector");
 
-// middleware
+// middleware to support http
 app.use(express.json());
 app.use(express.static(path.join(__dirname+"/public")));
 app.use(express.urlencoded({extended:true}));

@@ -15,8 +15,29 @@ window.onload = async event => {
 
 	mobileBtnExit.addEventListener('click', () => {
 		nav.classList.remove('menu-btn');
-	})
+	});
 	// end of navbar
+	// delete account event listener
+	const deleteUserAccount = document.getElementById("deleteUserAccount");
+	deleteUserAccount.addEventListener("click" , async e =>{
+		e.preventDefault();
+		await fetch("/auth/deleteAccount" , {
+			method:"DELETE",
+			headers: new Headers({
+				'Content-Type':'application/json',
+				'Authorization':`Bearer ${token}`
+			}),
+			body:null,
+		})
+		.then(data => data.json())
+		.then(result => {
+			window.location.href = "../index.html";
+			localStorage.removeItem("authkey");
+			// console.log(result);
+		})
+		.catch(error => alert(error));
+	});
+	// end of delete account event listener
 
 
 	// create boxes
@@ -65,7 +86,7 @@ window.onload = async event => {
 					.then(data => data.json())
 					.then(results => {
 						// change the inner html
-						console.log(results,"from approve point")
+						alert(results.message);
 						window.location.href = window.location.href;
 					})
 					.catch(error => console.log(error));
@@ -81,7 +102,7 @@ window.onload = async event => {
 					.then(data => data.json())
 					.then(results => {
 						// change the inner html
-						console.log(results,"from return point")
+						alert(results.message);
 						window.location.href = window.location.href;
 					})
 					.catch(error => console.log(error))
@@ -140,6 +161,12 @@ window.onload = async event => {
 				alert(error.message);
 			})
 		});
+		// separate the buttons
+		// add gen class
+		button1.classList.add("genBtn");
+		button2.classList.add("genBtn");
+		button3.classList.add("genBtn");
+		button4.classList.add("genBtn");
 		// 
 		div2.appendChild(button1)
 		div2.appendChild(button2)
@@ -165,10 +192,9 @@ window.onload = async event => {
 		})
 			.then(data => data.json())
 			.then(result => {
-				console.log(result);
 				const { equipments, error, message } = result;
 				if (!error && !equipments) {
-					console.log("unable to fetch equipments")
+					alert("unable to fetch equipments")
 				}
 				listHolder.innerHTML = ``;
 				equipments.forEach(equipment => {
@@ -212,18 +238,18 @@ window.onload = async event => {
 				'Authorization': `Bearer ${token}`,
 			}),
 			body:formData,
-			// body: JSON.stringify({
-			// 	name: name.value,
-			// 	description: description.value,
-			// })
 		})
 			.then(data => data.json())
 			.then(result => {
 				const { id, error, message } = result;
+				console.log(result);
+				nav.classList.remove('menu-btn');
+				window.location.href = window.location.href;
 				if (id && !error) {
-					console.log(message, "equipments created", error, id);
+					window.location.href = window.location.href;
 				} else {
-					console.log(message, "equipment not created", error, id);
+					window.location.href = window.location.href;
+					// alert(message, "equipment not created", error, id);
 				}
 				// console.log(message, "equipments obtained", error, id);
 				createEquipment.reset();
@@ -231,7 +257,7 @@ window.onload = async event => {
 				window.location.href = href;
 			})
 			.catch(error => {
-				console.log(error);
+				alert(error.message);
 			})
 	});
 	// end of equipment creation

@@ -50,7 +50,6 @@ window.onload = async event => {
     const signUpForm = document.getElementById("signUpForm");
     const token = localStorage.getItem("authkey");
     if (token) {
-        console.log(token, "from tokec")
         let { pageError, pageMessage, pageTo } = await whereToRedirect(token);
         // let page = await whereToRedirect(token);
         console.log(pageTo, "man")
@@ -90,7 +89,7 @@ window.onload = async event => {
                             window.location.href = `./${pageTo}/index.html`;
                         } else {
                             // unable to log in to any page
-                            console.log(`Error ${error}:${message}`);
+                            alert(`Error ${error}:${message}`);
                         }
                     } else {
                         // token not obtained show error

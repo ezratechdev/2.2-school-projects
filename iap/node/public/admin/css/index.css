@@ -345,6 +345,30 @@ nav li a:hover {
   transform: scale(0.95);
  }
  
+ #createEquipment{
+   text-align: center;
+ }
+ #createEquipment input{
+   border: 1px solid #767676;
+   outline: none;
+   font-weight: bold;
+   font-size: 1rem;
+   color: #767676;
+   width: 80%;
+   padding: 1rem;
+   margin: 1rem auto;
+   border-radius: 1rem;
+ }
+ #createEquipment input::placeholder{
+   color: #767676;
+ }
+ #createEquipment input[type="submit"]{
+   transition: ease-in-out 0.2s;
+ }
+ #createEquipment input[type="submit"]:hover{
+   background: #333;
+   color: #aaa;
+ }
 
 /* end of modal css */
 
@@ -357,3 +381,22 @@ nav li a:hover {
   width: 100%;
   height: auto;
 }
+/* start of auto gen button */
+.genBtn{
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0.4rem;
+  margin: 1rem auto;
+  font-weight: bold;
+  font-size: 1rem;
+  color: #767676;
+  background: #aaa;
+  border-radius: 1rem;
+  transition: 0.2s ease-in-out;
+}
+.genBtn:hover{
+  color: #aaa;
+  background: #767676;
+}
+/* end of autogen btn */

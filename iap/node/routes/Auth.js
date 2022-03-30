@@ -72,10 +72,6 @@ Auth.post("/login" , expressAsynchHandler(async (req , res)=>{
             })
         }
         if(typeof result != "undefined" && result.length > 0){
-            // const usersData = {
-            //     ...
-            // };
-            console.log(result,result.length);
             const { userID , email} = result[0];
             const gainedPassword = result[0].password;
             if(password == gainedPassword){
@@ -94,17 +90,18 @@ Auth.post("/login" , expressAsynchHandler(async (req , res)=>{
                     })
                 })
             }
-        } else res.send(result+"invalid credentials");
+        } else res.json({result:"invalid credentials"});
     });
 }));
 
 Auth.post("/getpage" , Protect , (req ,res)=>{
     if(req.user){
-       const{ previledge  } = req.user[0];
+       const{ previledge , email } = req.user[0];
        res.json({
            error:false,
            message:`User was found , redirect to :${previledge == "student" ? "client page" :"admin page"}`,
            page:`${previledge == "student" ? 'client' : 'admin'}`,
+           email,
        });
     }else res.json({
         ...ResponseFunction({
@@ -123,7 +120,6 @@ Auth.post("/reset" , Protect , (req , res)=>{
             message:`Old or new password was not passed`,
         });
     }
-    console.log("end point hit");
     if(password == oldPass){
         const updateQuerry = "UPDATE users SET users.password='"+newPass+"' WHERE users.userID='"+userID+"'";
         conn.query(updateQuerry ,(error)=>{
@@ -148,5 +144,43 @@ Auth.post("/reset" , Protect , (req , res)=>{
     }
 });
 
+
+Auth.delete("/deleteAccount" , Protect , (req , res)=>{
+    if (!req.user) res.json({
+
+        error: true,
+        message: `User not found`,
+
+        status: 404,
+    });
+    // gain previledge
+    const { userID , email } = req.user[0];
+    if (!userID) {
+        res.json({
+
+            error: true,
+            message: `User id was not found kindly try again`,
+
+        })
+        return;
+    }
+
+    const deleteUserQuerry = "DELETE FROM users where users.userID='"+userID+"'";
+    conn.query(deleteUserQuerry , (error)=>{
+        if(error){
+            res.json({
+                error:true,
+                message:`Error faced\n${error}`,
+                status:500,
+            });
+            return;
+        }
+        res.json({
+            error:false,
+            message:`Account for user with email ${email} has been deleted`,
+            status:200,
+        });
+    });
+});
 
 module.exports = Auth;
